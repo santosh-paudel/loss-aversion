@@ -14,14 +14,25 @@ import firebase from "firebase/app";
 import router from "./router";
 import store from "./store/store";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCzhcRDkedKLXPbOL8GZ3sNEeWVIdDUIhU",
-  authDomain: "loss-aversion.firebaseapp.com",
-  projectId: "loss-aversion",
-  storageBucket: "loss-aversion.appspot.com",
-  messagingSenderId: "304480813182",
-  appId: "1:304480813182:web:54b2470ef4a1126473182f",
-  measurementId: "G-5FGREB60YT",
+// Santosh
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCzhcRDkedKLXPbOL8GZ3sNEeWVIdDUIhU",
+//   authDomain: "loss-aversion.firebaseapp.com",
+//   projectId: "loss-aversion",
+//   storageBucket: "loss-aversion.appspot.com",
+//   messagingSenderId: "304480813182",
+//   appId: "1:304480813182:web:54b2470ef4a1126473182f",
+//   measurementId: "G-5FGREB60YT",
+// };
+
+// Sumaiya
+var firebaseConfig = {
+  apiKey: "AIzaSyAhWJQugPHAC_XoGo7spx_3NuXPIvSlnTo",
+  authDomain: "loss-aversion-9b128.firebaseapp.com",
+  projectId: "loss-aversion-9b128",
+  storageBucket: "loss-aversion-9b128.appspot.com",
+  messagingSenderId: "995030115712",
+  appId: "1:995030115712:web:074c9aceb7cb9123d94d65"
 };
 firebase.initializeApp(firebaseConfig);
 
