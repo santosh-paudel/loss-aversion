@@ -85,12 +85,6 @@ export default {
   name: "Demographic",
   data() {
     return {
-      form: {
-        gender: null,
-        yearInSchool: null,
-        race: null,
-        age: null,
-      },
       genderOptions: [
         { text: "Select Gender", value: null },
         "Male",
@@ -136,6 +130,8 @@ export default {
     },
     race: {
       get() {
+        // eslint-disable-next-line no-debugger
+        debugger;
         return this.$store.state.race;
       },
       set(value) {
@@ -175,7 +171,7 @@ export default {
       }
     },
     async init() {
-      this.$store.dispatch("initProject", {});
+      // this.$store.dispatch("initProject", {});
     },
   },
 

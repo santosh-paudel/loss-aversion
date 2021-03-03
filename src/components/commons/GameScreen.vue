@@ -3,29 +3,33 @@
     <div class="row justify-content-center align-self-center margin-auto">
       <!-- state init -->
       <b-button
-        v-if="state === 'init'"
+        v-if="state === 'i'"
         size="lg"
         variant="primary"
-        @click="btnClick()"
-        >Click here to start
+        @click="startGame()"
+        >Click here to start the game
       </b-button>
 
       <!-- fixation state -->
-      <div v-else-if="state === 'fixation'">
+      <div v-else-if="state === 'f'">
         <!-- <img src="../../assets/plus.svg" style="height: 50px; width: 50px" /> -->
       </div>
-      <div v-else-if="state === 'target'">
+      <div v-else-if="state === 't'">
         <img class="la-target" src="../../assets/x.svg" />
         <!-- <b-icon icon="plus" scale="20"></b-icon> -->
       </div>
-      <div v-else-if="state === 'standard'">
+      <div v-else-if="state === 's'">
         <img class="la-standard" src="../../assets/o.svg" />
         <!-- <b-icon icon="square-fill" scale="20"></b-icon> -->
       </div>
-      <div v-else-if="state === 'exit'">
+      <div v-else-if="state === 'e'">
         <h4>Congratulation!</h4>
-        <h5>Correct Answers: {{ gameStats.wrongAnswers }}</h5>
-        <h5>Incorrect Answers: {{ gameStats.correctAnswers }}</h5>
+        <h5>Correct Answers: {{ gameStats.correctAnswers }}</h5>
+        <h5>Incorrect Answers: {{ gameStats.wrongAnswers }}</h5>
+
+        <b-button class="mt-4" size="lg" variant="primary" @click="nextBtn()"
+          >Next
+        </b-button>
       </div>
     </div>
   </div>
@@ -37,7 +41,7 @@ export default {
   props: {
     state: {
       type: String,
-      default: "init",
+      default: "i", //init
     },
   },
   computed: {
@@ -45,9 +49,13 @@ export default {
   },
 
   methods: {
-    btnClick() {
+    startGame() {
       this.$emit("start-game");
       console.log(this.state);
+    },
+    nextBtn() {
+      this.$store.dispatch("gameOver");
+      this.$router.push({ name: "Debrief" });
     },
   },
   mounted() {},

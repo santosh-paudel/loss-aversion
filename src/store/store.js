@@ -1,7 +1,7 @@
 /* eslint-disable no-debugger */
 import Vue from "vue";
 import Vuex from "vuex";
-import createPersistedState from "vuex-persistedstate";
+// import createPersistedState from "vuex-persistedstate";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -11,10 +11,10 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   plugins: [
-    createPersistedState({
-      key: "loss-aversion",
-      storage: window.sessionStorage,
-    }),
+    // createPersistedState({
+    //   key: "loss-aversion",
+    //   storage: window.sessionStorage,
+    // }),
   ],
   state: {
     consentGranted: false,
@@ -29,11 +29,14 @@ const store = new Vuex.Store({
     // One of these instructions will appear on the user's screen. Which of these
     // instructions display depends on the sequence number of the user
     instructions: [
-      "Press the button when you see the target, and you'll gain 10 points",
+      'You will be presented with a series of symbols. Please press the space bar when you see an "X". Press press when you see the target, and you\'ll gain 10 points',
       "Press the button when you see the target. Every time you fail to do so, you'll lose 10 points",
       "Press the button when you see the target (no loss or gain of points)",
       "Press the button when you see the target; you get 10 points if you do it correctly, and lose 10 points if you don't",
     ],
+    // If the user has already played, the game this will be
+    gameOver: false,
+    gameState: null, //array
     // pattern: ["O", "O", "X", "O", "O", "O", "X", "O", "X", "X"],
     pattern: [
       "O",
@@ -51,6 +54,7 @@ const store = new Vuex.Store({
       "O",
       "O",
       "X",
+
       // "O",
       // "O",
       // "O",
@@ -367,8 +371,6 @@ const store = new Vuex.Store({
       // "O",
       // "O",
     ],
-
-    gameState: null, //array
   },
   mutations: {
     setConsent(state, val) {
@@ -399,6 +401,9 @@ const store = new Vuex.Store({
     gameState(state, arr) {
       state.gameState = arr;
     },
+    gameOver(state, isOver) {
+      state.gameOver = isOver;
+    },
   },
   getters: {
     instruction: (state) => {
@@ -410,15 +415,15 @@ const store = new Vuex.Store({
 
       for (let i = 0; i < state.pattern.length; i++) {
         if (state.pattern[i] === "X") {
-          pattern.push("target");
+          pattern.push("t"); // target
         } else if (state.pattern[i] === "O") {
-          pattern.push("standard");
+          pattern.push("s"); //standard
         } else {
           throw new Error(`Invalid pattern ${state.pattern[i]} at index ${i}`);
         }
 
         // add fixation at each point
-        pattern.push("fixation");
+        pattern.push("f");
       }
 
       console.log("pattern", pattern);
@@ -445,6 +450,9 @@ const store = new Vuex.Store({
     },
   },
   actions: {
+    gameOver() {
+      this.commit("gameOver", true);
+    },
     grantConsent({ commit }, data) {
       commit("setConsent", data.consentGranted);
     },
@@ -476,10 +484,12 @@ const store = new Vuex.Store({
           age: state.age,
           startTime: state.startTime,
           surveyGroup: state.surveyGroup,
+          gameState: state.gameState,
         });
     },
 
     async updateGameState({ commit, state }, gameState) {
+      // Convert the data types to firebase data types
       commit("gameState", gameState);
 
       const user = firebase.auth().currentUser;
@@ -487,9 +497,7 @@ const store = new Vuex.Store({
         .firestore()
         .collection("survey")
         .doc(user.uid)
-        .collection("game")
-        .doc("raw")
-        .set({ state: state.gameState });
+        .update({ gameState: state.gameState });
     },
 
     /**
@@ -507,13 +515,16 @@ const store = new Vuex.Store({
         .collection("survey")
         .doc(user.uid)
         .get();
-      debugger;
       if (userGameInfo.exists) {
         const data = userGameInfo.data();
         state.consentGranted = data.consentGranted;
         state.gender = data.gender;
+        state.race = data.race;
+        state.age = data.age;
         state.surveyGroup = data.surveyGroup;
         state.yearInSchool = data.yearInSchool;
+        state.gameOver = data.gameState == null ? false : true;
+        state.gameState = data.gameState;
       }
 
       // Don't fetch startTime from the stored state because it can

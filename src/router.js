@@ -4,6 +4,7 @@ import Router from "vue-router";
 import InformedConsent from "./components/pages/InformedConsent";
 import DemographicPage from "./components/pages/DemographicPage";
 import Game from "./components/pages/Game";
+import DebriefForm from "./components/pages/DebriefForm";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -33,6 +34,14 @@ const router = new Router({
       path: "/main",
       name: "Game",
       component: Game,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/debrief",
+      name: "Debrief",
+      component: DebriefForm,
       meta: {
         requiresAuth: true,
       },
